@@ -7,14 +7,10 @@ const key = 'counter';
 
 app.get('/', async (req, res) => {
     let value: number | undefined;
-    let success;
-    do {
-        let results = db.getEntry(key);
-        value = (results?.value || 0) + 1;
-        let version = results?.version;
-        let nextVersion = (version || 0) + 1;
-        success = await db.put(key, value, nextVersion, version);
-    } while (!success);
+    await db.transaction(() => {
+        value = (db.get(key) || 0) + 1;
+        db.put(key, value);
+    });
     if (undefined === value) {
         res.status(500).send(
             JSON.stringify({
