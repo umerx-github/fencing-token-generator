@@ -1,22 +1,20 @@
-import { open } from 'lmdb';
-import { DatabaseAdapter } from './classes/DatabaseAdapter.js';
 import express from 'express';
-
-// const db = open<number, string>('db', { useVersions: true });
-const db = open<number, string>('db', {});
+import { open } from 'lmdb';
 
 const app = express();
-console.log('running!');
+const db = open<number, string>('db', {});
+const key = 'counter';
 const state = {
-    int: (await db.get('counter')) || 0,
+    value: (await db.get(key)) || 0,
 };
+
 app.get('/', async (req, res) => {
-    state.int++;
-    const val = state.int;
-    await db.put('counter', val);
+    state.value++;
+    const value = state.value;
+    await db.put(key, value);
     res.send(
         JSON.stringify({
-            token: val,
+            value,
         })
     );
 });
