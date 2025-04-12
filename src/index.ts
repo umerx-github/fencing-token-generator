@@ -2,7 +2,7 @@ import express from 'express';
 import { open } from 'lmdb';
 
 const app = express();
-const db = open<number, string>('db', { useVersions: true });
+const db = open<number, string>('db', {});
 const key = 'counter';
 
 app.get('/', async (req, res) => {
